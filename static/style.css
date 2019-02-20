@@ -10,7 +10,7 @@
  */
 
 body {
-  max-width: 800px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1em;
@@ -70,4 +70,8 @@ a:hover {
 .article .time { margin-top: 1.5em; display: inline-block; }
 .article .url { display: inline-block; }
 .article .src-url { display: inline-block; }
-.article .content { margin-top: 1em; }
+.article .content { 
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+  border-top: 1px solid #333;
+}

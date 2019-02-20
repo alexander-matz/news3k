@@ -6,13 +6,18 @@ import datetime
 import struct
 from base64 import b64encode, b64decode
 
-from flask import Flask, g, request, render_template
-app = Flask(__name__)
-app.config.from_object(__name__)
+from flask import Flask, g, request, render_template, Blueprint
 
-app.config['DATABASE'] = "news.sqlite"
-app.config['PERPAGE'] = 250
-app.jinja_env.auto_reload = True 
+import sys
+if sys.version_info[0] < 3: raise Exception("Must use python 3")
+
+fromiso = None
+if sys.version_info[0] == 3 and sys.version_info[1] < 7:
+    import iso8601
+    fromiso = iso8601.parse_date
+else:
+    fromiso = datetime.datetime.fromisoformat
+	
 
 # b64 encode/decode i64 values
 # automatic padding/unpadding
@@ -21,7 +26,7 @@ def i64dec(s): return struct.unpack("Q", b64decode(s + '=', b'-_'))[0]
 def split(s): return s.split('\n')
 def fmtdate(s, fmt = None):
     if type(s) is str:
-        d = datetime.datetime.fromisoformat(s)
+        d = fromiso(s)
     else:
         d = s
     today = datetime.datetime.today()
@@ -34,6 +39,13 @@ def fmtdate(s, fmt = None):
         return d.strftime('%d %b %H:%M')
     else:
         return d.strftime('%d %b %Y %H:%HM')
+
+app = Flask(__name__)
+app.config.from_object(__name__)
+
+app.config['DATABASE'] = "news.sqlite"
+app.config['PERPAGE'] = 250
+app.jinja_env.auto_reload = True 
 
 app.jinja_env.globals.update(
     b64enc = i64enc,

@@ -1,7 +1,7 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - News</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="static/reset.css">
+<link rel="stylesheet" href="static/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <section class="content">
   {% for message in get_flashed_messages() %}

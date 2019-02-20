@@ -13,7 +13,7 @@
     {% for article in articles %}
     <li class='article'>
       <div class='title'>
-        <a href="{{ url_for('article', handle = b64enc(article.handle)) }}">
+        <a href="article?handle={{ b64enc(article.handle) }}">
           {{ article.title }}
         </a>
       </div>
