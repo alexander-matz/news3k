@@ -10,16 +10,10 @@
   {% endif %}
 {% endblock %}
 
-{% block header %}
-  {% if article is not none %}
-    {{ article.title }}
-  {% else %}
-  {% endif %}
-{% endblock %}
-
 {% block content %}
 <div class='article'>
   {% if article is not none %}
+  <h1>{{ article.title }}</h1>
   <div class='time'>{{ fmtdate(article.found_at) }}</div>
   <div class='url'><a href="{{ article.url }}">source</a></div>
   <div class='src-url'><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>

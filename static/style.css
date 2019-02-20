@@ -67,8 +67,7 @@ a:hover {
  * ARTICLE
  */
 
-.article { margin-top: 1.5em; }
-.article .time { display: inline-block; }
+.article .time { margin-top: 1.5em; display: inline-block; }
 .article .url { display: inline-block; }
 .article .src-url { display: inline-block; }
 .article .content { margin-top: 1em; }
