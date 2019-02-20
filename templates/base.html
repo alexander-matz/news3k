@@ -1,6 +1,8 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - News3k</title>
+<title>{% block title %}{% endblock %} - News</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <section class="content">
   <header>
     <h1>{% block header %}{% endblock %}</h1>

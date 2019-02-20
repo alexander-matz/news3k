@@ -9,15 +9,12 @@ import os
 
 import warnings
 import sqlite3
+import nltk
 
 import random
 
+nltk.data.path.append("./nltk_data")
 db_name = os.environ.get("NEWS3K_DATABASE", "news.sqlite")
-
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore",category=DeprecationWarning)
-    import nltk
-    nltk.data.path.append('./nltk_data')
 
 def article_handle(cur, trys):
     for _ in range(trys):
@@ -27,9 +24,13 @@ def article_handle(cur, trys):
     return None
 
 def fetch_article(article, handle, src_id, found_at, db):
-    article.download()
-    article.parse()
-    article.nlp()
+    try:
+        article.download()
+        article.parse()
+        article.nlp()
+    except Exception as e:
+        traceback.print_exc()
+        return False
     db.execute("INSERT OR IGNORE INTO articles "
         "(url, handle, source, title, top_img, text, summary, found_at)"
         "VALUES(?, ?, ?, ?, ?, ?, ?, ?);",
@@ -45,15 +46,11 @@ def block_article(article, handle, src_id, found_at, db):
     return True
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("usage: news3k urls")
-        sys.exit(1)
-
     db = sqlite3.connect(db_name)
-    db.execute("CREATE TABLE IF NOT EXISTS sources "
-             "(id INTEGER PRIMARY KEY, url TEXT UNIQUE, domain TEXT, brand TEXT);")
+    db.execute("CREATE TABLE IF NOT EXISTS sources"
+             "(id INTEGER PRIMARY KEY, url TEXT UNIQUE NOT NULL, domain TEXT, brand TEXT);")
     db.execute("CREATE TABLE IF NOT EXISTS articles "
-             "(url PRIMARY KEY, handle INTEGER, source INTEGER, "
+            "(url PRIMARY KEY, handle INTEGER NOT NULL, source INTEGER NOT NULL, "
              " title TEXT, top_img TEXT, text TEXT, summary TEXT, found_at DATE, "
              " FOREIGN KEY (source) REFERENCES sources(id) ON DELETE CASCADE);")
     db.execute("CREATE INDEX IF NOT EXISTS a_fh ON articles(found_at, handle);")
@@ -62,42 +59,45 @@ if __name__ == "__main__":
 
     found_at = datetime.datetime.now()
 
-    for link in sys.argv[1:]:
-        print('collecting: %s' % (link,))
+    nsources = 0
+    sources = cur.execute("SELECT id, url, domain, brand FROM sources;").fetchall()
+    for (src_id, url, domain, brand) in sources:
+        nsources += 1
+        print("collecting: %s" % (url,))
         try:
-            src = newspaper.build(link, memoize_articles = False)
-            src_id = cur.execute("SELECT id FROM sources WHERE url = ?;", (link,)).fetchone()
-            src_is_new = False
-            if src_id == None:
-                cur.execute("INSERT INTO sources(url, domain, brand) VALUES(?, ?, ?);",
-                    (src.url, src.domain, src.brand))
-                src_id = cur.lastrowid
-                db.commit()
-                src_is_new = True
-            else:
-                src_id = src_id[0]
-            print('total articles: %d' % (len(src.articles),))
-
-            n = 0
-            for article in src.articles:
-                if cur.execute("SELECT 1 FROM articles WHERE url = ? LIMIT 1;",
-                        (article.url,)).fetchone() != None:
-                    continue
-
-                handle = article_handle(db, 10)
-                if handle == None:
-                    print('unable to generate article handle! database crowded?')
-                    continue
-
-                if not src_is_new:
-                    if fetch_article(article, handle, src_id, found_at, db):
-                        n += 1
-                else:
-                    if block_article(article, handle, src_id, found_at, db):
-                        n += 1
-            print('new articles: %d' % n)
+            src = newspaper.build(url, memoize_articles = False)
         except Exception as e:
-            traceback.print_exception(e)
+            traceback.print_exc()
+            continue
+        src_is_new = False
+        if domain == None or brand == None:
+            db.execute("UPDATE sources SET domain = ?, brand = ? WHERE id = ?",
+                    (src.domain, src.brand, src_id))
+            db.commit()
+            src_is_new = True
+
+        new = 0
+        blocked = 0
+        for article in src.articles:
+            if cur.execute("SELECT 1 FROM articles WHERE url = ? LIMIT 1;",
+                    (article.url,)).fetchone() != None:
+                continue
+
+            handle = article_handle(db, 10)
+            if handle == None:
+                print("unable to generate article handle! database crowded?")
+                continue
+
+            if not src_is_new:
+                if fetch_article(article, handle, src_id, found_at, db):
+                    new += 1
+            else:
+                if block_article(article, handle, src_id, found_at, db):
+                    blocked+= 1
+        print("total: %d, new %d, blocked: %d" % (len(src.articles), new, blocked))
+
+    if nsources == 0:
+        print("no sources found in 'sources' table, add IDs and URLs")
     db.close()
 
     sys.exit(0)

@@ -7,30 +7,30 @@
 {% block header %}<a href="{{ url_for('index')}}">Overview</a>{% endblock %}
 
 {% block content %}
+  <div class='generated'>
+    Generated {{ fmtdate(generated, '%d %b %H:%M') }}
+  </div>
   {% if articles|length > 0 %}
-  <ul>
+  <ul class='article-list'>
     {% for article in articles %}
-    <li>
-      <div>
+    <li class='article'>
+      <div class='title'>
         <a href="{{ url_for('article', handle = b64enc(article.handle)) }}">
           {{ article.title }}
         </a>
       </div>
-      <div>{{ fmtdate(article.found_at) }}</div>
-      <div><a href="{{ article.url }}">source</a></div>
-      <div><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
-      <div>
+      <div class='time'>{{ fmtdate(article.found_at) }}</div>
+      <div class='url'><a href="{{ article.url }}">source</a></div>
+      <div class='src-url'><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
+      <div class='summary'>
         {% for piece in split(article.summary) %}
         <p>{{ piece }}
         {% endfor %}
       </div>
     </li>
     {% endfor %}
-    {% if next_before is not none %}
-    <a href="{{ url_for('index', before=next_before) }}">older</a>
-    {% endif %}
   </ul>
   {% else %}
-    No Articles
+  <div class='no-articles'>No Articles</div>
   {% endif %}
 {% endblock %}

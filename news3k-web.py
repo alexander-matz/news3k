@@ -11,17 +11,23 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config['DATABASE'] = "news.sqlite"
-app.config['PERPAGE'] = 20
+app.config['PERPAGE'] = 250
+app.jinja_env.auto_reload = True 
 
 # b64 encode/decode i64 values
 # automatic padding/unpadding
 def i64enc(s): return b64encode(struct.pack("Q", s), b'-_').decode('utf-8')[:-1]
 def i64dec(s): return struct.unpack("Q", b64decode(s + '=', b'-_'))[0]
 def split(s): return s.split('\n')
-def fmtdate(s):
-    d = datetime.datetime.fromisoformat(s)
+def fmtdate(s, fmt = None):
+    if type(s) is str:
+        d = datetime.datetime.fromisoformat(s)
+    else:
+        d = s
     today = datetime.datetime.today()
-    if d.year == today.year and d.month == today.month \
+    if fmt != None:
+        return d.strftime(fmt)
+    elif d.year == today.year and d.month == today.month \
             and d.day == today.day:
         return d.strftime('Today %H:%M')
     elif d.year == today.year:
@@ -42,6 +48,11 @@ def db():
                 #detect_types = sqlite3.PARSE_DECLTYPES)
         g.db.row_factory = sqlite3.Row
     return g.db
+
+@app.before_request
+def before_request():
+    if 'localhost' in request.host_url or '0.0.0.0' in request.host_url:
+        app.jinja_env.cache = {}
 
 @app.route("/article")
 def article():
@@ -66,14 +77,16 @@ def index():
     after = request.args.get('after')
 
     perpage = app.config['PERPAGE']
+    now = datetime.datetime.now()
 
     articles = db().execute('SELECT a.url, a.handle, a.title, '
             'a.summary, a.found_at, s.url AS srcurl, s.brand '
             'FROM articles AS a '
             'LEFT JOIN sources AS s ON a.source = s.id '
-            'WHERE title IS NOT NULL AND summary IS NOT NULL AND text IS NOT NULL '
+            'WHERE title IS NOT NULL '
             'ORDER BY a.found_at, a.handle DESC LIMIT ?;',
             (perpage,)).fetchall()
 
     return render_template('index.html',
-            articles = articles[:perpage])
+            articles = articles[:perpage],
+            generated = now)

@@ -18,16 +18,18 @@
 {% endblock %}
 
 {% block content %}
-{% if article is not none %}
-  <div>{{ fmtdate(article.found_at) }}</div>
-  <div><a href="{{ article.url }}">source</a></div>
-  <div><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
-  <div>
+<div class='article'>
+  {% if article is not none %}
+  <div class='time'>{{ fmtdate(article.found_at) }}</div>
+  <div class='url'><a href="{{ article.url }}">source</a></div>
+  <div class='src-url'><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
+  <div class='content'>
     {% for piece in split(article.text) %}
     <p>{{ piece }}
     {% endfor %}
   </div>
-{% else %}
+  {% else %}
   Article not found
-{% endif %}
+  {% endif %}
+</div>
 {% endblock %}

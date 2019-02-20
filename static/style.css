@@ -1,0 +1,74 @@
+/* vim: ts=2 sts=2 sw=2 et ai
+ */
+:root {
+  --serif: "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif;
+  --sans: Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
+}
+
+/******************************************************************************
+ * BASE
+ */
+
+body {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+  font-family: var(--serif);
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 2em;
+  line-height: 1.2;
+}
+
+/******************************************************************************
+ * COLORS
+ */
+body {
+  color: #333;
+}
+a, a:visited{
+  color: #000;
+}
+a:hover {
+  color: #333;
+}
+
+/******************************************************************************
+ * INDEX
+ */
+
+.generated {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.article-list li {
+  margin-bottom: 2em; }
+
+.article-list li .title {
+  font-size: 1.5em;
+}
+
+.article-list li .summary {
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+  border-top: 1px solid #333;
+}
+
+.article-list li .time { display: inline-block; }
+.article-list li .url { display: inline-block; }
+.article-list li .src-url { display: inline-block; }
+
+/******************************************************************************
+ * ARTICLE
+ */
+
+.article { margin-top: 1.5em; }
+.article .time { display: inline-block; }
+.article .url { display: inline-block; }
+.article .src-url { display: inline-block; }
+.article .content { margin-top: 1em; }
