@@ -96,6 +96,7 @@ def index():
             'FROM articles AS a '
             'LEFT JOIN sources AS s ON a.source = s.id '
             'WHERE title IS NOT NULL '
+            '  AND a.text IS NOT NULL AND LENGTH(a.text) >= 140 '
             'ORDER BY a.found_at DESC, a.handle DESC LIMIT ?;',
             (perpage,)).fetchall()
 
