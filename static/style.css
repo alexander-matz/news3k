@@ -51,6 +51,7 @@ a:hover {
 
 .article-list li .title {
   font-size: 1.5em;
+  margin-bottom: 0.5em;
 }
 
 .article-list li .summary {

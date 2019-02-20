@@ -11,7 +11,7 @@
   {% if articles|length > 0 %}
   <ul class='article-list'>
     {% for article in articles %}
-    <li class='article'>
+    <li>
       <div class='title'>
         <a href="article?handle={{ b64enc(article.handle) }}">
           {{ article.title }}

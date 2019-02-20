@@ -96,7 +96,7 @@ def index():
             'FROM articles AS a '
             'LEFT JOIN sources AS s ON a.source = s.id '
             'WHERE title IS NOT NULL '
-            'ORDER BY a.found_at, a.handle DESC LIMIT ?;',
+            'ORDER BY a.found_at DESC, a.handle DESC LIMIT ?;',
             (perpage,)).fetchall()
 
     return render_template('index.html',
