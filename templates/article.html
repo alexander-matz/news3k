@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{# vim: ts=2 sts=2 sw=2 et ai
+#}
+
+{% block title %}
+  {% if article is not none %}
+    {{ article.title }}
+  {% else %}
+    article not found 
+  {% endif %}
+{% endblock %}
+
+{% block header %}
+  {% if article is not none %}
+    {{ article.title }}
+  {% else %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if article is not none %}
+  <div>{{ fmtdate(article.found_at) }}</div>
+  <div><a href="{{ article.url }}">source</a></div>
+  <div><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
+  <div>
+    {% for piece in split(article.text) %}
+    <p>{{ piece }}
+    {% endfor %}
+  </div>
+{% else %}
+  Article not found
+{% endif %}
+{% endblock %}

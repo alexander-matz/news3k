@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{# vim: ts=2 sts=2 sw=2 et ai
+#}
+
+{% block title %}Home{% endblock %}
+
+{% block header %}<a href="{{ url_for('index')}}">Overview</a>{% endblock %}
+
+{% block content %}
+  {% if articles|length > 0 %}
+  <ul>
+    {% for article in articles %}
+    <li>
+      <div>
+        <a href="{{ url_for('article', handle = b64enc(article.handle)) }}">
+          {{ article.title }}
+        </a>
+      </div>
+      <div>{{ fmtdate(article.found_at) }}</div>
+      <div><a href="{{ article.url }}">source</a></div>
+      <div><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
+      <div>
+        {% for piece in split(article.summary) %}
+        <p>{{ piece }}
+        {% endfor %}
+      </div>
+    </li>
+    {% endfor %}
+    {% if next_before is not none %}
+    <a href="{{ url_for('index', before=next_before) }}">older</a>
+    {% endif %}
+  </ul>
+  {% else %}
+    No Articles
+  {% endif %}
+{% endblock %}
