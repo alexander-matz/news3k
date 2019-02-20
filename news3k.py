@@ -36,13 +36,11 @@ def fetch_article(article, handle, src_id, found_at, db):
         "VALUES(?, ?, ?, ?, ?, ?, ?, ?);",
         (article.url, handle, src_id, article.title, article.top_image,
         article.text, article.summary, found_at))
-    db.commit()
     return True
 
 def block_article(article, handle, src_id, found_at, db):
     db.execute("INSERT OR IGNORE INTO articles (url, handle, source, found_at) "
             "VALUES(?, ?, ?, ?);", (article.url, handle, src_id, found_at))
-    db.commit()
     return True
 
 if __name__ == "__main__":
@@ -94,6 +92,7 @@ if __name__ == "__main__":
             else:
                 if block_article(article, handle, src_id, found_at, db):
                     blocked+= 1
+        db.commit()
         print("total: %d, new %d, blocked: %d" % (len(src.articles), new, blocked))
 
     if nsources == 0:
