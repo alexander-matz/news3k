@@ -9,6 +9,7 @@ import datetime
 import traceback
 import os
 import click
+from urllib.parse import urlparse, ParseResult
 
 import warnings
 import sqlite3
@@ -17,25 +18,6 @@ import nltk
 import random
 
 nltk.data.path.append("./nltk_data")
-
-@click.group()
-@click.option("--database", default="news.sqlite")
-@click.option("--debug/--no-debug", default=False)
-@click.pass_context
-def cli(ctx, database, debug):
-    db = sqlite3.connect(database)
-    db.execute("CREATE TABLE IF NOT EXISTS sources"
-             "(id INTEGER PRIMARY KEY, url TEXT UNIQUE NOT NULL, domain TEXT, brand TEXT);")
-    db.execute("CREATE TABLE IF NOT EXISTS articles "
-            "(url PRIMARY KEY, handle INTEGER NOT NULL, source INTEGER NOT NULL, "
-             " title TEXT, top_img TEXT, text TEXT, summary TEXT, found_at DATE, "
-             " FOREIGN KEY (source) REFERENCES sources(id) ON DELETE CASCADE);")
-    db.execute("CREATE INDEX IF NOT EXISTS a_fh ON articles(found_at, handle);")
-    if debug:
-        db.set_trace_callback(print)
-    ctx.obj["DB"] = db
-    ctx.obj["DEBUG"] = debug
-    pass
 
 def article_handle(db, trys):
     for _ in range(trys):
@@ -53,7 +35,9 @@ def build_source(url):
     return src
 
 def article_exists(db, url):
-    res = db.execute("SELECT 1 FROM articles WHERE url = ? LIMIT 1;", (url,))
+    parsed = urlparse(url)
+    noprefix = ParseResult("", *parsed[1:]).geturl()
+    res = db.execute("SELECT 1 FROM articles WHERE url LIKE '%' || ? LIMIT 1;", (noprefix,))
     return res.fetchone() != None
 
 def fetch_single(article, src_id, found_at, db, dummy = False):
@@ -83,6 +67,24 @@ def fetch_single(article, src_id, found_at, db, dummy = False):
         text, summary, found_at))
     return True
 
+@click.group()
+@click.option("--database", default="news.sqlite")
+@click.option("--debug/--no-debug", default=False)
+@click.pass_context
+def cli(ctx, database, debug):
+    db = sqlite3.connect(database)
+    db.execute("CREATE TABLE IF NOT EXISTS sources"
+             "(id INTEGER PRIMARY KEY, url TEXT UNIQUE NOT NULL, domain TEXT, brand TEXT);")
+    db.execute("CREATE TABLE IF NOT EXISTS articles "
+            "(url PRIMARY KEY, handle INTEGER NOT NULL, source INTEGER NOT NULL, "
+             " title TEXT, top_img TEXT, text TEXT, summary TEXT, found_at DATE, "
+             " FOREIGN KEY (source) REFERENCES sources(id) ON DELETE CASCADE);")
+    db.execute("CREATE INDEX IF NOT EXISTS a_fh ON articles(found_at, handle);")
+    if debug:
+        db.set_trace_callback(print)
+    ctx.obj["DB"] = db
+    ctx.obj["DEBUG"] = debug
+    pass
 
 @cli.command()
 @click.pass_context
