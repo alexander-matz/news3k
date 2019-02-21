@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import sys
+assert sys.version_info >= (3, 4)
+
 import os
 import sqlite3
 import datetime
@@ -8,16 +11,13 @@ from base64 import b64encode, b64decode
 
 from flask import Flask, g, request, render_template, Blueprint
 
-import sys
-if sys.version_info[0] < 3: raise Exception("Must use python 3")
-
 fromiso = None
-if sys.version_info[0] == 3 and sys.version_info[1] < 7:
+if sys.version_info < (3, 7):
     import iso8601
     fromiso = iso8601.parse_date
 else:
     fromiso = datetime.datetime.fromisoformat
-	
+
 
 # b64 encode/decode i64 values
 # automatic padding/unpadding

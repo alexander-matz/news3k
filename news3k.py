@@ -3,6 +3,8 @@
 # vim: ts=4 sts=4 sw=4 et ai
 
 import sys
+assert sys.version_info >= (3, 4)
+
 import newspaper
 from pprint import pprint
 import datetime
@@ -16,6 +18,7 @@ import sqlite3
 import nltk
 
 import random
+
 
 nltk.data.path.append("./nltk_data")
 
@@ -67,6 +70,7 @@ def fetch_single(article, src_id, found_at, db, dummy = False):
         text, summary, found_at))
     return True
 
+
 @click.group()
 @click.option("--database", default="news.sqlite")
 @click.option("--debug/--no-debug", default=False)
@@ -80,8 +84,11 @@ def cli(ctx, database, debug):
              " title TEXT, top_img TEXT, text TEXT, summary TEXT, found_at DATE, "
              " FOREIGN KEY (source) REFERENCES sources(id) ON DELETE CASCADE);")
     db.execute("CREATE INDEX IF NOT EXISTS a_fh ON articles(found_at, handle);")
+
+    # wrapper function voids syntax error in python 2.x
     if debug:
-        db.set_trace_callback(print)
+        def cb(s): print(s) 
+        db.set_trace_callback(cb)
     ctx.obj["DB"] = db
     ctx.obj["DEBUG"] = debug
     pass

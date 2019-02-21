@@ -18,8 +18,8 @@
         </a>
       </div>
       <div class='time'>{{ fmtdate(article.found_at) }}</div>
-      <div class='url'><a href="{{ article.url }}">source</a></div>
       <div class='src-url'><a href="{{ article.srcurl }}">{{ article.brand }}</a></div>
+      <div class='url'><a href="{{ article.url }}">source</a></div>
       <div class='summary'>
         {% for piece in split(article.summary) %}
         <p>{{ piece }}

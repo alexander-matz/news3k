@@ -49,11 +49,11 @@ a:hover {
 
 .article-list li .title {
   font-size: 1.5em;
-  margin-bottom: 0.2em;
+  margin-bottom: -0.2em;
 }
 
 .article-list li .summary {
-  margin-top: 0.5em;
+  margin-top: 0.8em;
 }
 
 .article-list li .time,
@@ -69,7 +69,7 @@ a:hover {
  */
 
 .article h1 {
-  margin-bottom: 0.2em;
+  margin-bottom: -0.2em;
 }
 
 .article .time,
@@ -81,5 +81,5 @@ a:hover {
 }
 
 .article .content { 
-  margin-top: 0.5em;
+  margin-top: 0.8em;
 }
