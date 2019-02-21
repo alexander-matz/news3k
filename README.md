@@ -54,7 +54,7 @@ Use your platforms mechanism to periodically scrape articles. A hacky bash
 solution to scrape every 10 minues (with massive drift) is:
 
 ```bash
-$ ( while true; do FLASK_APP=news3k-web.py flask run; sleep 600; done ) &>news3k.log & \
+$ ( while true; do ./news3k.py fetch-articles; sleep 600; done ) &>news3k.log & \
     echo $! >news3k.pid ; disown
 ```
 
