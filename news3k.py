@@ -172,7 +172,6 @@ def delete_source(ctx, url):
     print('deleted source %s' % (url,))
 
 @cli.command()
-@click.argument('url')
 @click.pass_context
 def list_sources(ctx):
     db = ctx.obj["DB"]
