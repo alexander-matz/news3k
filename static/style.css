@@ -13,8 +13,7 @@ body {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1em;
-  padding-right: 1em;
+  padding: 1em;
   font-family: var(--serif);
   line-height: 1.5;
 }
@@ -42,7 +41,6 @@ a:hover {
  */
 
 .generated {
-  margin-top: 2em;
   margin-bottom: 1em;
 }
 
