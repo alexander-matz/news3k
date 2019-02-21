@@ -47,32 +47,41 @@ a:hover {
 }
 
 .article-list li {
-  margin-bottom: 2em; }
+  margin-bottom: 2.5em; }
 
 .article-list li .title {
   font-size: 1.5em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.2em;
 }
 
 .article-list li .summary {
   margin-top: 0.5em;
-  padding-top: 0.5em;
-  border-top: 1px solid #333;
 }
 
-.article-list li .time { display: inline-block; }
-.article-list li .url { display: inline-block; }
-.article-list li .src-url { display: inline-block; }
+.article-list li .time,
+.article-list li .url,
+.article-list li .src-url {
+  display: inline-block;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
 
 /******************************************************************************
  * ARTICLE
  */
 
-.article .time { margin-top: 1.5em; display: inline-block; }
-.article .url { display: inline-block; }
-.article .src-url { display: inline-block; }
+.article h1 {
+  margin-bottom: 0.2em;
+}
+
+.article .time,
+.article .url,
+.article .src-url {
+  display: inline-block;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
 .article .content { 
   margin-top: 0.5em;
-  padding-top: 0.5em;
-  border-top: 1px solid #333;
 }
