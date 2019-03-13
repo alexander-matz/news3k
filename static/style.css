@@ -44,16 +44,18 @@ a:hover {
   margin-bottom: 1em;
 }
 
-.article-list li {
-  margin-bottom: 2.5em; }
+/* all except first item have top margin */
+.article-list li ~ li {
+  margin-top: 2.5em;
+}
 
 .article-list li .title {
   font-size: 1.5em;
   margin-bottom: -0.2em;
 }
 
-.article-list li .summary {
-  margin-top: 0.8em;
+.article-list li .summary p {
+  margin-top: 0.6em;
 }
 
 .article-list li .time,
@@ -80,6 +82,6 @@ a:hover {
   opacity: 0.8;
 }
 
-.article .content { 
-  margin-top: 0.8em;
+.article .content p {
+  margin-top: 0.6em;
 }
