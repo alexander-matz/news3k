@@ -1,0 +1,24 @@
+{{/* vim: ft=html ts=2 sts=2 sw=2 et ai
+*/}}
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="{{ url "/static/reset.css" }}">
+<link rel="stylesheet" href="{{ url "/static/style.css" }}">
+
+<title>{{ .Title }} - News</title>
+<section class="content">
+  <div class="article">
+    <h1>{{ .Title }}</h1>
+    <div class="time">{{ .FoundAt.Format "2 Jan 15:04" }}</div>
+    <div class="src-url"><a href="{{ .SrcUrl }}">{{ .Brand }}</a></div>
+    <div class="url"><a href="{{ .Url }}">source</a></div>
+    <div class="content">
+      {{ range $_, $piece := split .Text }}
+      <p>{{ $piece }}
+      {{ end }}
+    </div>
+  </div>
+</section>
