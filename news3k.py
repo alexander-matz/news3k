@@ -70,7 +70,6 @@ def fetch_single(article, src_id, found_at, db, dummy = False):
         text, summary, found_at))
     return True
 
-
 @click.group()
 @click.option("--database", default="news.sqlite")
 @click.option("--debug/--no-debug", default=False)
@@ -80,10 +79,11 @@ def cli(ctx, database, debug):
     db.execute("CREATE TABLE IF NOT EXISTS sources"
              "(id INTEGER PRIMARY KEY, url TEXT UNIQUE NOT NULL, domain TEXT, brand TEXT);")
     db.execute("CREATE TABLE IF NOT EXISTS articles "
-            "(url PRIMARY KEY, handle INTEGER NOT NULL, source INTEGER NOT NULL, "
+             "(url PRIMARY KEY, handle INTEGER NOT NULL, source INTEGER NOT NULL, "
              " title TEXT, top_img TEXT, text TEXT, summary TEXT, found_at DATE, "
              " FOREIGN KEY (source) REFERENCES sources(id) ON DELETE CASCADE);")
-    db.execute("CREATE INDEX IF NOT EXISTS a_fh ON articles(found_at, handle);")
+    db.execute("CREATE INDEX IF NOT EXISTS a_found ON articles(found_at);")
+    db.execute("CREATE INDEX IF NOT EXISTS a_handle ON articles(handle);")
 
     # wrapper function voids syntax error in python 2.x
     if debug:
@@ -92,6 +92,15 @@ def cli(ctx, database, debug):
     ctx.obj["DB"] = db
     ctx.obj["DEBUG"] = debug
     pass
+
+@cli.command()
+@click.pass_context
+def clean(ctx):
+    db = ctx.obj["DB"]
+    db.executescript("""
+        DELETE FROM articles WHERE found_at < date('now', '-14 days');
+        VACUUM;
+    """)
 
 @cli.command()
 @click.pass_context
